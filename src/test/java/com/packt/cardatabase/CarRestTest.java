@@ -1,0 +1,29 @@
+package com.packt.cardatabase;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+public class CarRestTest {
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Test
+    void testAuthentication() throws Exception {
+        //{"username":"admin", "password":"admin"}
+        this.mockMvc.perform(post("/login").content("{\"username\":\"admin\", \"password\":\"admin\"}"))
+                .andDo(print()).andExpect(status().isOk());
+
+        //{"username":"admin", "password":"wrong"}
+        this.mockMvc.perform(post("/login").content("{\"username\":\"admin\", \"password\":\"wrong\"}"))
+                .andDo(print()).andExpect(status().is4xxClientError());
+    }
+}
